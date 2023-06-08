@@ -7,6 +7,9 @@ const bodyParser = require("body-parser");
 // Local Imports
 const authRoutes = require("./routes/auth");
 
+// Useful Constants
+const mongodbUrl = "";
+
 // Server Creation
 const app = express();
 
