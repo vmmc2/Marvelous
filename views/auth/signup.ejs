@@ -1,0 +1,24 @@
+<%- include("../includes/header.ejs") %>
+</head>
+
+<body>
+    <%- include("../includes/navbar.ejs") %>
+
+    <main>
+        <form action="/signup" method="POST" novalidate>
+            <label for="username"> Username </label>
+            <input id="username" name="username" type="text" value="">
+
+            <label for="email"> Email </label>
+            <input id="email" name="email" type="email" value="">
+
+            <label for="password"> Password </label>
+            <input id="password" name="password" type="password" value="">
+
+            <label for="confirmPassword"> Confirm Password </label>
+            <input id="confirmPassword" name="confirmPassword" type="password" value="">
+
+            <button type="submit"> Signup! </button>
+        </form>
+
+    </main>
