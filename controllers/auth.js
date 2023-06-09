@@ -1,3 +1,5 @@
+const User = require("../models/user");
+
 exports.getSignin = (req, res, next) => {
     console.log("Received the GET request to the '/signin' route.");
     res.status(200).render("auth/signin", {

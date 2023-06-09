@@ -2,13 +2,14 @@
 require("dotenv").config({path: __dirname + "/.env"});
 const path = require("path");
 const express = require("express");
+const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
 // Local Imports
 const authRoutes = require("./routes/auth");
 
 // Useful Constants
-const mongodbUrl = "";
+const mongodbUrl = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PSW}@cluster0.aeywkmi.mongodb.net/${process.env.MONGODB_DBNAME}?retryWrites=true&w=majority`;
 
 // Server Creation
 const app = express();
@@ -29,4 +30,10 @@ app.use("/", (req, res, next) => {
 });
 
 // Server Binding
-app.listen(3000);
+mongoose.connect(mongodbUrl)
+    .then(result => {
+        app.listen(3000);
+    })
+    .catch(err => {
+        console.log(err);
+    });
