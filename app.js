@@ -26,7 +26,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(authRoutes);
 
 app.use("/", (req, res, next) => {
-    res.status(200).send("<h1> Hello World! </h1>");
+    res.status(200).render("home", {
+        pageTitle: "Marvelous",
+        path: "/"
+    });
 });
 
 // Server Binding
