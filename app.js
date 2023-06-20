@@ -4,12 +4,21 @@ const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 // Local Imports
 const authRoutes = require("./routes/auth");
 
 // Useful Constants
 const mongodbUrl = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PSW}@cluster0.aeywkmi.mongodb.net/${process.env.MONGODB_DBNAME}?retryWrites=true&w=majority`;
+const store = new MongoDBStore({
+    uri: mongodbUrl,
+    databaseName: `${process.env.MONGODB_DBNAME}`,
+    collection: "sessions"
+}, err => {
+    console.log(err);
+});
 
 // Server Creation
 const app = express();
@@ -18,8 +27,13 @@ const app = express();
 app.set("views", "views");
 app.set("view engine", "ejs");
 
-
 // Middlewares: Pre-defined and User-defined
+app.use(session({
+    secret: `${process.env.SESSION_SECRET}`,
+    resave: true,
+    saveUninitialized: false,
+    store: store
+}));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -28,7 +42,8 @@ app.use(authRoutes);
 app.use("/", (req, res, next) => {
     res.status(200).render("home", {
         pageTitle: "Marvelous",
-        path: "/"
+        path: "/",
+        isAuthenticated: req.session.isLoggedIn
     });
 });
 

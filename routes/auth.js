@@ -1,5 +1,8 @@
+// Third-Party Package Imports
 const express = require("express");
 
+// Local Imports
+const isAuth = require("../middlewares/is-auth");
 const authController = require("../controllers/auth");
 
 const router = express.Router();
@@ -11,6 +14,8 @@ router.get("/signup", authController.getSignup);
 
 // POST Routes
 router.post("/signin", authController.postSignin);
+
+router.post("/signout", isAuth, authController.postSignout);
 
 router.post("/signup", authController.postSignup);
 

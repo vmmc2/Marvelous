@@ -6,9 +6,15 @@
 
     <main>
         <h1> Marvelous </h1>
+        <h2> Your personal comics management assistant! </h2>
 
-        <a href="/signup"> Sign Up! </a>
-        <a href="/signin"> Sign In! </a>
+        <a href="/signup"> Sign Up </a>
+        <a href="/signin"> Sign In </a>
+        <% if(isAuthenticated){ %>
+            <form action="/signout" method="POST">
+                <button type="submit"> Sign Out </button>
+            </form>
+        <% } %>
     </main>
 
     <%- include("./includes/footer.ejs") %>
