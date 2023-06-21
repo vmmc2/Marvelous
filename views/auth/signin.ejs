@@ -5,6 +5,14 @@
     <%- include("../includes/navbar.ejs") %>
 
     <main>
+        <h1> Sign In </h1>
+
+        <% if(flashErrorMessages){ %>
+            <% for(let i = 0; i < flashErrorMessages.length; i++){ %>
+                <p> <%= flashErrorMessages[i] %> </p>
+            <% } %>
+        <% } %>
+
         <form action="/signin" method="POST" novalidate>
             <label for="username"> Username </label>
             <input id="username" name="username" type="text" value="">

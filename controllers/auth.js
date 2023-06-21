@@ -4,19 +4,33 @@ const bcrypt = require("bcryptjs");
 // Local Imports
 const User = require("../models/user");
 
+// Utility Functions
+function getFlashErrorMessages(req){
+    let messages = req.flash("error");
+    if(messages.length < 1){
+        messages = null;
+    }
+    return messages
+}
+
+// Controller Actions
 exports.getSignin = (req, res, next) => {
     console.log("Received a GET request to the '/signin' route.");
+    const flashErrorMessages = getFlashErrorMessages(req);
     res.status(200).render("auth/signin", {
         pageTitle: "Sign In",
-        path: "/signin"
+        path: "/signin",
+        flashErrorMessages: flashErrorMessages
     });
 }
 
 exports.getSignup = (req, res, next) => {
     console.log("Received a GET request to the '/signup' route.");
+    const flashErrorMessages = getFlashErrorMessages(req);
     res.status(200).render("auth/signup", {
         pageTitle: "Sign Up",
-        path: "/signup"
+        path: "/signup",
+        flashErrorMessages: flashErrorMessages
     });
 }
 
@@ -28,7 +42,8 @@ exports.postSignin = (req, res, next) => {
 
     User.findOne({username: username})
         .then(user => {
-            if(!user){ // Usuario nao encontrado no banco de dados. Nao pode fazer login. 
+            if(!user){ // Usuario nao encontrado no banco de dados. Nao pode fazer login.
+                req.flash("error", "Wrong username or password.");
                 return res.redirect("/signin");
             }else{
                 bcrypt.compare(password, user.password)
@@ -40,6 +55,7 @@ exports.postSignin = (req, res, next) => {
                                 res.redirect("/");
                             });
                         }else{ // Usuario nao forneceu a senha correta.
+                            req.flash("error", "Wrong username or password.");
                             return res.redirect("/signin");
                         }
                     })
@@ -91,6 +107,7 @@ exports.postSignup = (req, res, next) => {
                         console.log(err);
                     });
             }else{ // Um usuario com as mesmas credenciais foi encontrado. Nao pode criar conta. Fazer validacao adequadamente.
+                req.flash("error", "Username or Email are already been used by another user.");
                 return res.redirect("/signup");
             }
         })

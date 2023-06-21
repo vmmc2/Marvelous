@@ -4,6 +4,7 @@ const path = require("path");
 const csurf = require("csurf");
 const express = require("express");
 const mongoose = require("mongoose");
+const flash = require("connect-flash");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
@@ -41,6 +42,7 @@ app.use(session({
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(csrfProtection);
+app.use(flash());
 
 
 // User-Defined Middlewares
