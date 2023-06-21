@@ -12,6 +12,7 @@
             <label for="password"> Password </label>
             <input id="password" name="password" type="password" value="">
 
+            <input name="_csrf" type="hidden" value="<%= csrfToken %>">
             <button type="submit"> Sign In! </button>
         </form>
 

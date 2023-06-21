@@ -53,7 +53,6 @@ exports.postSignin = (req, res, next) => {
         });
 }
 
-
 exports.postSignout = (req, res, next) => {
     req.session.destroy(err => {
         console.log(err);

@@ -1,6 +1,7 @@
 // Third-Party Package Imports
 require("dotenv").config({path: __dirname + "/.env"});
 const path = require("path");
+const csurf = require("csurf");
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -17,8 +18,11 @@ const store = new MongoDBStore({
     databaseName: `${process.env.MONGODB_DBNAME}`,
     collection: "sessions"
 }, err => {
-    console.log(err);
+    if(err){
+        console.log(err);
+    }
 });
+const csrfProtection = csurf();
 
 // Server Creation
 const app = express();
@@ -27,7 +31,7 @@ const app = express();
 app.set("views", "views");
 app.set("view engine", "ejs");
 
-// Middlewares: Pre-defined and User-defined
+// Third-Party Middlewares
 app.use(session({
     secret: `${process.env.SESSION_SECRET}`,
     resave: true,
@@ -36,6 +40,16 @@ app.use(session({
 }));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(csrfProtection);
+
+
+// User-Defined Middlewares
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
+
 
 app.use(authRoutes);
 
