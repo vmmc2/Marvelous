@@ -13,12 +13,18 @@
             <% } %>
         <% } %>
 
+        <% if(validationErrors.length > 0){ %>
+            <% for(let i = 0; i < validationErrors.length; i++){ %>
+                <p> <%= validationErrors[i].msg %> </p>
+            <% } %>
+        <% } %>
+
         <form action="/signin" method="POST" novalidate>
             <label for="username"> Username </label>
-            <input id="username" name="username" type="text" value="">
+            <input id="username" name="username" type="text" value="<%= userData.username %>">
 
             <label for="password"> Password </label>
-            <input id="password" name="password" type="password" value="">
+            <input id="password" name="password" type="password" value="<%= userData.password %>">
 
             <input name="_csrf" type="hidden" value="<%= csrfToken %>">
             <button type="submit"> Sign In! </button>

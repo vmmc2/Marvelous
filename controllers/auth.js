@@ -11,7 +11,7 @@ function getFlashErrorMessages(req){
     if(messages.length < 1){
         messages = null;
     }
-    return messages
+    return messages;
 }
 
 // Controller Actions
@@ -21,7 +21,12 @@ exports.getSignin = (req, res, next) => {
     res.status(200).render("auth/signin", {
         pageTitle: "Sign In",
         path: "/signin",
-        flashErrorMessages: flashErrorMessages
+        flashErrorMessages: flashErrorMessages,
+        validationErrors: [],
+        userData: {
+            username: "",
+            password: ""
+        }
     });
 }
 
@@ -31,12 +36,26 @@ exports.getSignup = (req, res, next) => {
     res.status(200).render("auth/signup", {
         pageTitle: "Sign Up",
         path: "/signup",
-        flashErrorMessages: flashErrorMessages
+        flashErrorMessages: flashErrorMessages,
+        validationErrors: [],
+        userData: {
+            fullName: "",
+            username: "",
+            email: "",
+            password: "",
+            confirmPassword: ""
+        }
     });
 }
 
 exports.postSignin = (req, res, next) => {
     console.log("Received a POST request to the /signin route.");
+    const validationErrors = expressValidator.validationResult(req);
+
+    if(!validationErrors.isEmpty()){
+        console.log(validationErrors.array());
+        return res.render();
+    }
 
     const username = req.body.username;
     const password = req.body.password;
@@ -79,6 +98,12 @@ exports.postSignout = (req, res, next) => {
 
 exports.postSignup = (req, res, next) => {
     console.log("Received a POST request to the '/signup' route.");
+    const validationErrors = expressValidator.validationResult(req);
+
+    if(!validationErrors.isEmpty()){
+        console.log(validationErrors.array());
+        return res.render();
+    }
 
     const fullName = req.body.fullName;
     const username = req.body.username;
