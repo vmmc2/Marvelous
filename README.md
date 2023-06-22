@@ -1,5 +1,5 @@
 # Marvelous
-A web application to help comics readers to manage their collections more easily.
+A web application that help comics readers to manage their Marvel Comics collections more easily.
 
 ## Roadmap
 ### Sign-Up, Sign-In and Sign-Out related functionalities
