@@ -1,5 +1,6 @@
 // Third-Party Package Imports
 const bcrypt = require("bcryptjs");
+const expressValidator = require("express-validator");
 
 // Local Imports
 const User = require("../models/user");

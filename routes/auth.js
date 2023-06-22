@@ -1,5 +1,6 @@
 // Third-Party Package Imports
 const express = require("express");
+const expressValidator = require("express-validator");
 
 // Local Imports
 const isAuth = require("../middlewares/is-auth");
