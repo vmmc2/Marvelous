@@ -8,15 +8,15 @@
         <h1> Sign In </h1>
 
         <% if(flashErrorMessages){ %>
-            <% for(let i = 0; i < flashErrorMessages.length; i++){ %>
-                <p> <%= flashErrorMessages[i] %> </p>
-            <% } %>
+            <% flashErrorMessages.forEach(flashErrorMessage => { %>
+                <p> <%= flashErrorMessage %> </p>
+            <% }); %>
         <% } %>
 
         <% if(validationErrors.length > 0){ %>
-            <% for(let i = 0; i < validationErrors.length; i++){ %>
-                <p> <%= validationErrors[i].msg %> </p>
-            <% } %>
+            <% validationErrors.forEach(validationError => { %>
+                <p> <%= validationError.msg %> </p>
+            <% }) %>
         <% } %>
 
         <form action="/signin" method="POST" novalidate>

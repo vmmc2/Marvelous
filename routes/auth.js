@@ -15,17 +15,21 @@ router.get("/signup", authController.getSignup);
 
 // POST Routes
 router.post("/signin", [
-    expressValidator.check("username").trim().escape().isLength({min: 1}).isAlphanumeric().withMessage("Invalid username provided. An username should contain only letters and numbers."),
-    expressValidator.check("password").isLength({min: 10}).isAlphanumeric().withMessage("A password must have at least 10 characters and have only letters and numbers.")
+    expressValidator.check("username").trim(),
 ], authController.postSignin);
 
 router.post("/signout", isAuth, authController.postSignout);
 
 router.post("/signup", [
-    expressValidator.check("fullName").trim().escape().isLength({min: 1}).isAlpha({ignore: " "}).withMessage("Invalid full name provided. A full name should only contain letters."),
-    expressValidator.check("username").trim().escape().isLength({min: 1}).isAlphanumeric().withMessage("Invalid username provided. An username should contain only letters and numbers."),
-    expressValidator.check("email").trim().escape().isEmail().withMessage("Invalid email provided. Please provide an actual email."),
-    expressValidator.check("password").isLength({min: 10}).isAlphanumeric().withMessage("A password must have at least 10 characters and have only letters and numbers."),
+    expressValidator.check("fullName").trim().escape().isAlpha("en-US", {ignore: " "}).withMessage("Invalid full name. A full name should contain only letters.").isLength({min: 1}),
+    expressValidator.check("username").trim().escape().isAlphanumeric().withMessage("Invalid username. An username should contain only letters and numbers.").isLength({min: 1}),
+    expressValidator.check("email").trim().escape().isEmail().withMessage("Invalid email. Please provide a real email."),
+    expressValidator.check("password").isAlphanumeric().isLength({min: 10}).withMessage("Invalid password. A password should have at least 10 characters."),
+    expressValidator.check("password").custom(password => {
+        const hasLetters = /[a-zA-Z]/.test(password);
+        const hasNumbers = /\d/.test(password);
+        return hasLetters && hasNumbers;
+    }).withMessage("Invalid password. A password should contain letters and numbers."),
     expressValidator.check("confirmPassword").custom((confirmPassword, {req}) => {
         const password = req.body.password;
         if(password !== confirmPassword){

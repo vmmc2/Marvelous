@@ -8,15 +8,15 @@
         <h1> Sign Up </h1>
 
         <% if(flashErrorMessages){ %>
-            <% for(let i = 0; i < flashErrorMessages.length; i++){ %>
-                <p> <%= flashErrorMessages[i] %> </p>
-            <% } %>
+            <% flashErrorMessages.forEach(flashErrorMessage => { %>
+                <p> <%= flashErrorMessage %> </p>
+            <% }); %>
         <% } %>
 
         <% if(validationErrors.length > 0){ %>
-            <% for(let i = 0; i < validationErrors.length; i++){ %>
-                <p> <%= validationErrors[i].msg %> </p>
-            <% } %>
+            <% validationErrors.forEach(validationError => { %>
+                <p> <%= validationError.msg %> </p>
+            <% }) %>
         <% } %>
 
         <form action="/signup" method="POST" novalidate>
@@ -24,7 +24,7 @@
             <input id="fullName" name="fullName" type="text" value="<%= userData.fullName %>">
 
             <label for="username"> Username </label>
-            <input id="username" name="username" type="text" value="<%= userData.userName %>">
+            <input id="username" name="username" type="text" value="<%= userData.username %>">
 
             <label for="email"> Email </label>
             <input id="email" name="email" type="email" value="<%= userData.email %>">

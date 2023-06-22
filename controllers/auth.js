@@ -18,6 +18,7 @@ function getFlashErrorMessages(req){
 exports.getSignin = (req, res, next) => {
     console.log("Received a GET request to the '/signin' route.");
     const flashErrorMessages = getFlashErrorMessages(req);
+
     res.status(200).render("auth/signin", {
         pageTitle: "Sign In",
         path: "/signin",
@@ -33,6 +34,7 @@ exports.getSignin = (req, res, next) => {
 exports.getSignup = (req, res, next) => {
     console.log("Received a GET request to the '/signup' route.");
     const flashErrorMessages = getFlashErrorMessages(req);
+
     res.status(200).render("auth/signup", {
         pageTitle: "Sign Up",
         path: "/signup",
@@ -50,15 +52,22 @@ exports.getSignup = (req, res, next) => {
 
 exports.postSignin = (req, res, next) => {
     console.log("Received a POST request to the /signin route.");
-    const validationErrors = expressValidator.validationResult(req);
-
-    if(!validationErrors.isEmpty()){
-        console.log(validationErrors.array());
-        return res.render();
-    }
-
     const username = req.body.username;
     const password = req.body.password;
+    const validationErrors = expressValidator.validationResult(req).array().filter(valError => valError.msg !== "Invalid value");
+
+    if(validationErrors.length > 0){
+        return res.status(400).render("auth/signin", {
+            pageTitle: "Sign In",
+            path: "/signin",
+            flashErrorMessages: null,
+            validationErrors: validationErrors,
+            userData: {
+                username: username,
+                password: password
+            }
+        });;
+    }
 
     User.findOne({username: username})
         .then(user => {
@@ -90,6 +99,7 @@ exports.postSignin = (req, res, next) => {
 }
 
 exports.postSignout = (req, res, next) => {
+    console.log("Received a POST request to the '/signout' route.");
     req.session.destroy(err => {
         console.log(err);
         res.redirect("/");
@@ -98,18 +108,28 @@ exports.postSignout = (req, res, next) => {
 
 exports.postSignup = (req, res, next) => {
     console.log("Received a POST request to the '/signup' route.");
-    const validationErrors = expressValidator.validationResult(req);
-
-    if(!validationErrors.isEmpty()){
-        console.log(validationErrors.array());
-        return res.render();
-    }
-
     const fullName = req.body.fullName;
     const username = req.body.username;
     const email = req.body.email;
     const password = req.body.password;
     const confirmPassword = req.body.password;
+    const validationErrors = expressValidator.validationResult(req).array().filter(valError => valError.msg !== "Invalid value");
+
+    if(validationErrors.length > 0){
+        return res.status(400).render("auth/signup", {
+            pageTitle: "Sign Up",
+            path: "/signup",
+            flashErrorMessages: null,
+            validationErrors: validationErrors,
+            userData: {
+                fullName: fullName,
+                username: username,
+                email: email,
+                password: password,
+                confirmPassword: confirmPassword
+            }
+        });
+    }
 
     User.findOne({username: username, email: email})
         .then(user => {
