@@ -5,6 +5,8 @@ const expressValidator = require("express-validator");
 // Local Imports
 const User = require("../models/user");
 
+// Utility Constants
+
 // Utility Functions
 function getFlashErrorMessages(req){
     let messages = req.flash("error");
@@ -50,6 +52,23 @@ exports.getSignup = (req, res, next) => {
     });
 }
 
+exports.getUpdatePassword = (req, res, next) => {
+    console.log("Received a GET request to the '/update-password' route.");
+    const flashErrorMessages = getFlashErrorMessages(req);
+
+    res.status(200).render("auth/updatePassword", {
+        pageTitle: "Update Password",
+        path: "/updatePassword",
+        flashErrorMessages: flashErrorMessages,
+        validationErrors: [],
+        userData: {
+            currentPassword: "",
+            newPassword: "",
+            confirmNewPassword: ""
+        }
+    });
+}
+
 exports.postSignin = (req, res, next) => {
     console.log("Received a POST request to the /signin route.");
     const username = req.body.username;
@@ -66,7 +85,7 @@ exports.postSignin = (req, res, next) => {
                 username: username,
                 password: password
             }
-        });;
+        });
     }
 
     User.findOne({username: username})
@@ -145,8 +164,6 @@ exports.postSignup = (req, res, next) => {
                         return newUser.save();
                     })
                     .then(result => {
-                        console.log(result);
-                        console.log("User has been successfully created.");
                         res.redirect("/signin");
                     })
                     .catch(err => {
@@ -158,6 +175,63 @@ exports.postSignup = (req, res, next) => {
             }
         })
         .catch(err => { // Realizar tratamento de erros adequadamente.
+            console.log(err);
+        });
+}
+
+exports.postUpdatePassword = (req, res, next) => {
+    console.log("Received a POST request to the '/update-password' route.");
+
+    const currentUser = req.session.user;
+    const currentPassword = req.body.currentPassword;
+    const newPassword = req.body.newPassword;
+    const confirmNewPassword = req.body.confirmNewPassword;
+    const validationErrors = expressValidator.validationResult(req).array().filter(valError => valError.msg !== "Invalid value");
+
+    if(validationErrors.length > 0){
+        return res.status(400).render("auth/updatePassword", {
+            pageTitle: "Update Password",
+            path: "/update-password",
+            flashErrorMessages: null,
+            validationErrors: validationErrors,
+            userData: {
+                currentPassword: currentPassword,
+                newPassword: newPassword,
+                confirmNewPassword: confirmNewPassword
+            }
+        });
+    }
+
+    User.findOne({username: currentUser.username, email: currentUser.email})
+        .then(user => {
+            if(!user){
+                req.flash("error", "User not found.");
+                return res.redirect("/update-password");
+            }else{
+                return bcrypt.compare(currentPassword, user.password)
+                    .then(isPasswordCorrect => {
+                        if(isPasswordCorrect){
+                            bcrypt.hash(newPassword, parseInt(`${process.env.NUMBER_SALTS}`, 10))
+                                .then(encryptedNewPassword => {
+                                    return User.findOneAndUpdate({username: currentUser.username, email: currentUser.email}, {$set: {password: encryptedNewPassword}});
+                                })
+                                .then(result => {
+                                    res.redirect("/");
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                });
+                        }else{
+                            req.flash("error", "Current Password is incorrect. Please try again.");
+                            return res.redirect("/update-password");
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }
+        })
+        .catch(err => {
             console.log(err);
         });
 }

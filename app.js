@@ -12,7 +12,7 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 // Local Imports
 const authRoutes = require("./routes/auth");
 
-// Useful Constants
+// Utility Constants
 const mongodbUrl = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PSW}@cluster0.aeywkmi.mongodb.net/${process.env.MONGODB_DBNAME}?retryWrites=true&w=majority`;
 const store = new MongoDBStore({
     uri: mongodbUrl,

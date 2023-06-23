@@ -6,9 +6,9 @@ A web application that help comics readers to manage their Marvel Comics collect
 - [X] Implement basic user authentication.
 - [X] Implement defense against CSRF attacks.
 - [X] Implement user feedback to enhance UX when sign-up/sign-in errors happen.
-- [ ] Implement basic send email functionality.
-- [ ] Implement advanced user authentication (password resetting and authorization).
 - [X] Implement user (sign-up/sign-in) related validation.
+- [X] Implement password redefinition for signed-in (logged-in) users.
+- [ ] Implement error handling middleware.
 
 ### Next Steps
-- [ ] ???
+- [ ] Plan which functionalities the application will have based on three categories: essential, not essential and desired.
