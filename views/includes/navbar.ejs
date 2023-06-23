@@ -1,0 +1,11 @@
+<% if(!isAuthenticated){ %>
+    <a href="/signup"> Sign Up </a>
+    <a href="/signin"> Sign In </a>
+<% } %>
+<% if(isAuthenticated){ %>
+    <a href="/update-password"> Update Password </a>
+    <form action="/signout" method="POST">
+        <input name="_csrf" type="hidden" value="<%= csrfToken %>">
+        <button type="submit"> Sign Out </button>
+    </form>
+<% } %>

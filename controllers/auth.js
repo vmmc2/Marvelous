@@ -90,7 +90,7 @@ exports.postSignin = (req, res, next) => {
 
     User.findOne({username: username})
         .then(user => {
-            if(!user){ // Usuario nao encontrado no banco de dados. Nao pode fazer login.
+            if(!user){
                 req.flash("error", "Wrong username or password.");
                 return res.redirect("/signin");
             }else{
@@ -102,18 +102,22 @@ exports.postSignin = (req, res, next) => {
                             return req.session.save(result => {
                                 res.redirect("/");
                             });
-                        }else{ // Usuario nao forneceu a senha correta.
+                        }else{
                             req.flash("error", "Wrong username or password.");
                             return res.redirect("/signin");
                         }
                     })
-                    .catch(err => { // Realizar tratamento de erros adequadamente.
-                        console.log(err);
+                    .catch(err => {
+                        const error = new Error(err);
+                        error.httpStatusCode = 500;
+                        next(error);
                     });
             }
         })
-        .catch(err => { // Realizar tratamento de erros adequadamente.
-            console.log(err); 
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            next(error);
         });
 }
 
@@ -152,7 +156,7 @@ exports.postSignup = (req, res, next) => {
 
     User.findOne({username: username, email: email})
         .then(user => {
-            if(!user){ // Pode criar conta. Encripta a senha, salva no banco de dados. Redireciona para a rota "/signin".
+            if(!user){
                 bcrypt.hash(password, parseInt(`${process.env.NUMBER_SALTS}`, 10))
                     .then(encryptedPassword => {
                         const newUser = new User({
@@ -167,15 +171,19 @@ exports.postSignup = (req, res, next) => {
                         res.redirect("/signin");
                     })
                     .catch(err => {
-                        console.log(err);
+                        const error = new Error(err);
+                        error.httpStatusCode = 500;
+                        next(error);
                     });
-            }else{ // Um usuario com as mesmas credenciais foi encontrado. Nao pode criar conta. Fazer validacao adequadamente.
+            }else{
                 req.flash("error", "Username or Email are already been used by another user.");
                 return res.redirect("/signup");
             }
         })
-        .catch(err => { // Realizar tratamento de erros adequadamente.
-            console.log(err);
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            next(error);
         });
 }
 
@@ -219,7 +227,9 @@ exports.postUpdatePassword = (req, res, next) => {
                                     res.redirect("/");
                                 })
                                 .catch(err => {
-                                    console.log(err);
+                                    const error = new Error(err);
+                                    error.httpStatusCode = 500;
+                                    next(error);
                                 });
                         }else{
                             req.flash("error", "Current Password is incorrect. Please try again.");
@@ -227,11 +237,15 @@ exports.postUpdatePassword = (req, res, next) => {
                         }
                     })
                     .catch(err => {
-                        console.log(err);
+                        const error = new Error(err);
+                        error.httpStatusCode = 500;
+                        next(error);
                     });
             }
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            next(error);
         });
 }

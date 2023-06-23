@@ -9,8 +9,12 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 
+
 // Local Imports
 const authRoutes = require("./routes/auth");
+
+const errorController = require("./controllers/error");
+
 
 // Utility Constants
 const mongodbUrl = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PSW}@cluster0.aeywkmi.mongodb.net/${process.env.MONGODB_DBNAME}?retryWrites=true&w=majority`;
@@ -25,12 +29,15 @@ const store = new MongoDBStore({
 });
 const csrfProtection = csurf();
 
+
 // Server Creation
 const app = express();
+
 
 // Server Internal Config
 app.set("views", "views");
 app.set("view engine", "ejs");
+
 
 // Third-Party Middlewares
 app.use(session({
@@ -52,16 +59,23 @@ app.use((req, res, next) => {
     next();
 });
 
-
 app.use(authRoutes);
 
-app.use("/", (req, res, next) => {
+app.use("//", (req, res, next) => {
     res.status(200).render("home", {
         pageTitle: "Marvelous",
         path: "/",
-        isAuthenticated: req.session.isLoggedIn
     });
 });
+
+app.use((error, req, res, next) => {
+    res.status(error.httpStatusCode).render("/error/500", {
+        pageTitle: "500 - Internal Server Error",
+        path: "/500"
+    });
+});
+
+app.use(errorController.get404ErrorPage);
 
 // Server Binding
 mongoose.connect(mongodbUrl)
