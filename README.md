@@ -22,5 +22,8 @@ A web application that help comics readers to manage their Marvel Comics collect
     * Year
 
 ### Not-Essential (Nice-to-Have)
+- [ ] ???
 
 ### Desired (Additional Enhancements)
+- [ ] ???
+ 
