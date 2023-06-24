@@ -15,7 +15,7 @@ A web application that help comics readers to manage their Marvel Comics collect
 - [x] Plan which functionalities the application will have based on three categories: essential, not essential and desired.
 
 #### Comic Search
-- [] Implement a search functionality using the Marvel Comics API to find comics based on the following criteria:
+- [ ] Implement a search functionality using the Marvel Comics API to find comics based on the following criteria:
     * Title
     * Character
     * Series
