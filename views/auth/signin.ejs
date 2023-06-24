@@ -1,4 +1,5 @@
 <%- include("../includes/header.ejs") %>
+<link rel="stylesheet" href="/css/output.css">
 </head>
 
 <body>
@@ -27,7 +28,7 @@
             <input id="password" name="password" type="password" value="<%= userData.password %>">
 
             <input name="_csrf" type="hidden" value="<%= csrfToken %>">
-            <button type="submit"> Sign In! </button>
+            <button class="bg-red-700" type="submit"> Sign In! </button>
         </form>
 
     </main>
